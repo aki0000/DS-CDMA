@@ -14,6 +14,6 @@ func main() {
 	var datas = generator.Generatedatabyrand(Ndata)
 	fmt.Println(datas)
 	// BPSK変調
-	var bpskdatas = datasMat
+
 	fmt.Println("------------ DS-CDMA start ---------------")
 }

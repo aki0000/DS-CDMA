@@ -8,11 +8,11 @@ import (
 )
 
 // Generatedatabyrand 乱数によるデータ生成器
-func Generatedatabyrand(Ndata int) NewDense {
-	var datas []int
+func Generatedatabyrand(Ndata int) *mat.Dense {
+	var datas []float64
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < Ndata; i++ {
-		var data int = rand.Intn(2)
+		var data float64 = float64(rand.Intn(2))
 		datas = append(datas, data)
 	}
 	return mat.NewDense(1, 1000, datas)
