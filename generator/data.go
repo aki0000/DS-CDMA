@@ -15,5 +15,5 @@ func Generatedatabyrand(Ndata int) *mat.Dense {
 		var data float64 = float64(rand.Intn(2))
 		datas = append(datas, data)
 	}
-	return mat.NewDense(1, 1000, datas)
+	return mat.NewDense(Ndata, 1, datas)
 }
