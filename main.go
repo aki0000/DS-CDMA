@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"math"
+	"math/rand"
+	"time"
 
 	"./bpskmodulator"
 	"./generator"
@@ -11,16 +14,30 @@ import (
 // Ndata number of data
 const Ndata int = 1000
 
+// SNR Signal/Noise Ratio
+const SNR float64 = 10 ^ (0 / 10)
+
+// Norm norm
+const Norm float64 = 1 / SNR
+
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	fmt.Println("------------ Transmiiter ---------------")
 	// Creating binary data
 	var datas *mat.Dense = generator.Generatedatabyrand(Ndata)
 	// BPSK Modulartor
 	var bpsk = bpskmodulator.Modulator(datas)
 	fmt.Println("------------ Channel ---------------")
-
+	var noise = make([]float64, Ndata)
+	for index := 0; index < Ndata; index++ {
+		noise[index] = math.Sqrt(Norm/2) * float64(rand.Intn(Ndata))
+	}
+	var noisemat = mat.NewDense(Ndata, 1, noise)
+	var receive = mat.NewDense(1000, 1, nil)
+	receive.Copy(bpsk)
+	receive.Add(receive, noisemat)
 	fmt.Println("------------ Receiver ---------------")
-	var decodedatas = bpskmodulator.Decision(bpsk)
+	var decodedatas = bpskmodulator.Decision(receive)
 	fmt.Println(decodedatas)
 
 	fmt.Println("------------ Measuring BER ---------------")

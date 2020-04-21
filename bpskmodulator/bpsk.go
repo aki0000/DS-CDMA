@@ -19,6 +19,7 @@ func Modulator(datas *mat.Dense) *mat.Dense {
 	copydatas.Scale(2, copydatas)
 	var bpsk = mat.NewDense(Ndata, Nuser, nil)
 	bpsk.Sub(copydatas, constmat)
+
 	return bpsk
 }
 
