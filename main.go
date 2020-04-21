@@ -8,27 +8,34 @@ import (
 	"gonum.org/v1/gonum/mat"
 )
 
-// Ndata データの数
+// Ndata number of data
 const Ndata int = 1000
 
 func main() {
-	// 2値のデータ生成
+	fmt.Println("------------ Transmiiter ---------------")
+	// Creating binary data
 	var datas *mat.Dense = generator.Generatedatabyrand(Ndata)
-	// BPSK変調
+	// BPSK Modulartor
 	var bpsk = bpskmodulator.Modulator(datas)
-	fmt.Println("------------ DS-CDMA start ---------------")
-	fmt.Println(datas)
-	// Decoder
+	fmt.Println("------------ Channel ---------------")
+
+	fmt.Println("------------ Receiver ---------------")
 	var decodedatas = bpskmodulator.Decision(bpsk)
 	fmt.Println(decodedatas)
-	fmt.Println("------------ BER 計測 ---------------")
+
+	fmt.Println("------------ Measuring BER ---------------")
 	// BERの計測
-	var a = mat.NewDense(1000, 1, nil)
-	a.Sub(datas, decodedatas)
-	//fmt.Println(a)
-	//var c mat.Dense
-	//c.Mul(a.T(), a)
-	//fmt.Println(c)
-	//var d = mat.Sum(c)
-	//fmt.Println(d)
+	var BER float64 = MeasuringinstrumentforBER(datas, decodedatas)
+	fmt.Println(BER)
+}
+
+// MeasuringinstrumentforBER BERの計測器
+func MeasuringinstrumentforBER(datas *mat.Dense, decodedata *mat.Dense) float64 {
+	var Ndata, Nuser = datas.Dims()
+	// Formula for BER Sum(a - b)^2
+	var matrix = mat.NewDense(1000, 1, nil)
+	matrix.Sub(datas, decodedata)
+	matrix.MulElem(matrix, matrix)
+	var error = matrix.At(0, 0)
+	return error / float64((Ndata * Nuser))
 }
